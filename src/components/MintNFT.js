@@ -41,7 +41,7 @@ class MintNFT extends Component {
 
             const accounts = await web3.eth.getAccounts();
 
-            console.log("ipfsHash", this.state.ipfsHash);
+            // console.log("ipfsHash", this.state.ipfsHash);
 
             this.setState({ loading: true });
 

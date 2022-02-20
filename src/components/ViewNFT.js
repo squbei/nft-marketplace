@@ -11,7 +11,7 @@ class ViewNFT extends Component {
     }
 
     async componentDidMount() {
-        const supply = await collection.methods.getTotalSupply().call(); 
+        const supply = await collection.methods.totalSupply().call(); 
 
         const accounts = await web3.eth.getAccounts(); 
         this.setState({ accounts })
