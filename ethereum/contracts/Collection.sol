@@ -5,6 +5,10 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol"; 
 
 contract CollectionV0 is ERC721EnumerableUpgradeable {
+    /*
+    Upgradable contract. In future versions, do NOT remove or modify any existing variables.
+    Only define any new variables AFTER all existing variables. 
+     */
     uint256 private counter;
 
     struct NFT {

@@ -265,7 +265,13 @@ const abi = [
 		"type": "function"
 	},
 	{
-		"inputs": [],
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "addr",
+				"type": "address"
+			}
+		],
 		"name": "getOwnedNFTs",
 		"outputs": [
 			{

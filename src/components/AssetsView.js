@@ -12,9 +12,10 @@ class AssetsView extends Component {
     async componentDidMount() {   
         const accounts = await web3.eth.getAccounts(); 
     
-        const ownedNFTs = await collection.methods.getOwnedNFTs().call({
-          from: accounts[0]
-        })
+        const ownedNFTs = await collection.methods.getOwnedNFTs(accounts[0]).call({
+            from: accounts[0]
+        }
+        ); 
 
         let infos = []; 
 
