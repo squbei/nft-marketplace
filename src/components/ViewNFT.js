@@ -3,11 +3,13 @@ import web3 from '../web3';
 import collection from '../collection'; 
 import NFTCard from './NFTCard';
 import { Card } from 'semantic-ui-react';
+import ipfs from '../ipfs'; 
 
 class ViewNFT extends Component {
     state = {
         infos: [], 
-        accounts: []
+        accounts: [], 
+        image: ''
     }
 
     async componentDidMount() {
@@ -20,10 +22,20 @@ class ViewNFT extends Component {
 
         for (var id = supply; id > 0; id--) {
             const info = await collection.methods.getNFTInfo(id).call(); 
+
+            ipfs.files.cat(info[1], (err, file) => {
+                if (err) {
+                    console.log(err); 
+                    return; 
+                }
+                var json = JSON.parse(file.toString()); 
+                this.setState({ image: json['image'] })
+            })
+
             infos.push({
                     id: id,
                     name: info[0], 
-                    uri: "https://ipfs.io/ipfs/" + info[1], 
+                    uri: this.state.image, 
                     description: info[2],
                     creator: info[3], 
                     owner: info[4], 

@@ -18,6 +18,7 @@ if (typeof window !== "undefined" && typeof window.ethereum !== "undefined") {
   // We are on the server *OR* the user is not running metamask
   const provider = new Web3.providers.HttpProvider(
     "https://rinkeby.infura.io/v3/c5734fac1ce64b61bb2affc9850e3cdb"
+    //"https://ropsten.infura.io/v3/c8b6871f0af44e57979ffbc45a2727d6"
   );
   web3 = new Web3(provider);
 }

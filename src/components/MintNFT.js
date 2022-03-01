@@ -34,19 +34,30 @@ class MintNFT extends Component {
     
         ipfs.files.add(this.state.buffer, async (err, result) => {
             if (err) {
-            console.log(err);
-            return; 
+                console.log(err);
+                return; 
             }
             this.setState({ ipfsHash: result[0].hash })
-
-            const accounts = await web3.eth.getAccounts();
-
             // console.log("ipfsHash", this.state.ipfsHash);
+        })
+
+        var metadata = {
+            "image": "https://ipfs.io/ipfs/" + this.state.ipfsHash
+        }
+
+        var json = JSON.stringify(metadata); 
+        ipfs.files.add(Buffer.from(json), async (err, result) => {
+            if (err) {
+                console.log(err); 
+                return; 
+            }
 
             this.setState({ loading: true });
 
+            const accounts = await web3.eth.getAccounts();
+
             try {
-                await collection.methods.mint(this.state.name, this.state.ipfsHash, this.state.description, web3.utils.toWei(this.state.price, 'ether')).send({
+                await collection.methods.mint(this.state.name, result[0].hash, this.state.description, web3.utils.toWei(this.state.price, 'ether')).send({
                     from: accounts[0]
                     }); 
             } catch(err) {
@@ -56,7 +67,8 @@ class MintNFT extends Component {
             this.setState({ loading: false })
 
             return; 
-        }) 
+        })
+
     }
 
     render() {

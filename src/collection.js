@@ -2,7 +2,8 @@ import web3 from './web3';
 
 // const address = '0xfBC1D4846256EBef37906aCFB80f31eA66cC2C0C'
 // const address = '0xa2DDAd781589e9c0b74Abfa34e5Ec77F9180aEdC'
-const PROXY = "0xC7355bD7EC0820379BB0528B34aFad45ccaD224b"
+const PROXY = "0xb5EA10d11ba4033e53E031936f5f0669bc6D073a" // rinkeby address
+// const PROXY = "0x527bb8F4FDBdE56A450A22C2170CcD295Fbeb86b" // ropsten address
 const abi = [
 	{
 		"anonymous": false,
