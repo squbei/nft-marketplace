@@ -16,12 +16,14 @@ class MintNFT extends Component {
     onMint = async (event) => {
         event.preventDefault();
 
-        this.setState({ loading: true })
 
         const accounts = await web3.eth.getAccounts()
 
         Backendless.Data.of("nfts").findById(this.state.object_id)
             .then( async (obj) => {
+
+                this.setState({ loading: true })
+
                 try {
                     await collection.methods.mint(obj.product_title, obj.images, obj.product_description, 0).send({
                         from: accounts[0]
@@ -29,11 +31,13 @@ class MintNFT extends Component {
                 } catch(err) {
                     this.setState({ message: err.message })
                 }
+
+                this.setState({ loading: false })
+
             }).catch( (err) => {
                 console.log(err)
             })
         
-        this.setState({ loading: false })
     }
 
     render() {

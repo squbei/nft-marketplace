@@ -66,10 +66,10 @@ class App extends Component {
       <Container style={{ marginTop: '20px' }}>
         <div>
           <div style={{ marginBottom: '20px' }}>
-            <h1>Welcome to NFTea!</h1> 
+            <h1>Welcome to Lavyndr!</h1> 
             <ConnectButton/>
             <div style={{ marginTop: '10px' }}>
-              {/* <Button content="Explore all NFTs" onClick={(event) => this.setState({ view: 'browse' })}/> */}
+              <Button content="Explore all NFTs" onClick={(event) => this.setState({ view: 'browse' })}/>
               <Button content="Add a New Product" onClick={(event) => this.setState({ view: 'create' })}/>
               <Button content="See all templates" onClick={(event) => this.setState({ view: 'templates'})}/> 
               <Button content="Claim an NFT" onClick={(event) => this.setState({ view: 'claim' })}/>

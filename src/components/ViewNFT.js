@@ -22,6 +22,7 @@ class ViewNFT extends Component {
 
         for (var id = supply; id > 0; id--) {
             const info = await collection.methods.getNFTInfo(id).call(); 
+            // console.log(info)
             ipfs.files.cat(info[1], async (err, file) => {
                 if (err) {
                     console.log(err); 

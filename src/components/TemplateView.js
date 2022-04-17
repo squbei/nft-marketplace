@@ -77,7 +77,7 @@ class TemplateView extends Component {
     render() {
         return (
         <div>
-            <h2> My NFTs </h2>
+            <h2> Existing Product Templates </h2>
             <Card.Group>
                 {this.renderCards()}
             </Card.Group>
