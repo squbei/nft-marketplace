@@ -13,7 +13,7 @@ class MintNFT extends Component {
         ipfsHash: '', 
         buffer: null, 
         message: '', 
-        loading: ''
+        loading: false
     }
 
     onFileChange = (event) =>  {
@@ -32,43 +32,42 @@ class MintNFT extends Component {
     onMint = async (event) => {
         event.preventDefault();
     
-        ipfs.files.add(this.state.buffer, async (err, result) => {
+        ipfs.files.add(this.state.buffer, async (err, image_result) => {
             if (err) {
                 console.log(err);
                 return; 
             }
-            this.setState({ ipfsHash: result[0].hash })
+            this.setState({ ipfsHash: image_result[0].hash })
             // console.log("ipfsHash", this.state.ipfsHash);
-        })
 
-        var metadata = {
-            "image": "https://ipfs.io/ipfs/" + this.state.ipfsHash
-        }
-
-        var json = JSON.stringify(metadata); 
-        ipfs.files.add(Buffer.from(json), async (err, result) => {
-            if (err) {
-                console.log(err); 
+            var metadata = {
+                "image": "https://ipfs.io/ipfs/" + this.state.ipfsHash
+            }
+            var json = JSON.stringify(metadata); 
+            ipfs.files.add(Buffer.from(json), async (err, json_result) => {
+                if (err) {
+                    console.log(err); 
+                    return; 
+                }
+    
+                this.setState({ loading: true });
+    
+                const accounts = await web3.eth.getAccounts();
+    
+                try {
+                    await collection.methods.mint(this.state.name, json_result[0].hash, this.state.description, web3.utils.toWei(this.state.price, 'ether')).send({
+                        from: accounts[0]
+                        }); 
+                } catch(err) {
+                    this.setState({ message: err.message }); 
+                }
+                
+                this.setState({ loading: false })
+    
                 return; 
-            }
-
-            this.setState({ loading: true });
-
-            const accounts = await web3.eth.getAccounts();
-
-            try {
-                await collection.methods.mint(this.state.name, result[0].hash, this.state.description, web3.utils.toWei(this.state.price, 'ether')).send({
-                    from: accounts[0]
-                    }); 
-            } catch(err) {
-                this.setState({ message: err.message }); 
-            }
-            
-            this.setState({ loading: false })
-
-            return; 
+            })  
+            return;  
         })
-
     }
 
     render() {

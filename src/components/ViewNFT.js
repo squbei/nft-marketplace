@@ -22,17 +22,15 @@ class ViewNFT extends Component {
 
         for (var id = supply; id > 0; id--) {
             const info = await collection.methods.getNFTInfo(id).call(); 
-
-            ipfs.files.cat(info[1], (err, file) => {
+            ipfs.files.cat(info[1], async (err, file) => {
                 if (err) {
                     console.log(err); 
                     return; 
                 }
                 var json = JSON.parse(file.toString()); 
                 this.setState({ image: json['image'] })
-            })
 
-            infos.push({
+                infos.push({
                     id: id,
                     name: info[0], 
                     uri: this.state.image, 
@@ -42,9 +40,14 @@ class ViewNFT extends Component {
                     price: web3.utils.fromWei(info[5], 'ether'), 
                     forSale: info[6].toString()
                 });
+
+
+                this.setState({ infos }); 
+            })
+
+
         }
 
-        this.setState({ infos }); 
     }
 
     renderCards() {
