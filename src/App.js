@@ -32,7 +32,7 @@ class App extends Component {
     return null; 
   }
 
-  renderMint() {
+  renderCreate() {
     if (this.state.view === 'create') {
       return (<CreateTemplate/>)
       // return (<MintNFT/>); 
@@ -41,7 +41,7 @@ class App extends Component {
   }
 
   renderTemplates() {
-    if (this.state.view == 'templates') {
+    if (this.state.view === 'templates') {
       return (<TemplateView/>)
     }
     return null;
@@ -54,6 +54,13 @@ class App extends Component {
     return null; 
   }
 
+  renderClaim() {
+    if (this.state.view === 'claim') {
+      return (<MintNFT/>)
+    }
+    return null;
+  }
+
   render() {
     return (
       <Container style={{ marginTop: '20px' }}>
@@ -62,16 +69,19 @@ class App extends Component {
             <h1>Welcome to NFTea!</h1> 
             <ConnectButton/>
             <div style={{ marginTop: '10px' }}>
-              <Button content="Explore all NFTs" onClick={(event) => this.setState({ view: 'browse' })}/>
-              <Button content="Create a new NFT" onClick={(event) => this.setState({ view: 'create' })}/>
-              <Button content="Manage the NFTs you own" onClick={(event) => this.setState({ view: 'assets'})}/> 
+              {/* <Button content="Explore all NFTs" onClick={(event) => this.setState({ view: 'browse' })}/> */}
+              <Button content="Add a New Product" onClick={(event) => this.setState({ view: 'create' })}/>
               <Button content="See all templates" onClick={(event) => this.setState({ view: 'templates'})}/> 
+              <Button content="Claim an NFT" onClick={(event) => this.setState({ view: 'claim' })}/>
+              {/* <Button content="Manage the NFTs you own" onClick={(event) => this.setState({ view: 'assets'})}/>  */}
+
             </div>
           </div>
           {this.renderView()}
-          {this.renderMint()}
+          {this.renderCreate()}
           {this.renderAssets()}
           {this.renderTemplates()}
+          {this.renderClaim()}
         </div>
       </Container>
     );

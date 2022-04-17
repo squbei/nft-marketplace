@@ -6,7 +6,7 @@ import Backendless from "backendless";
 
 class TemplateCard extends Component {
     state = {
-        prod_id: '', 
+        isbn: '', 
         message: ''
     }
 
@@ -14,9 +14,11 @@ class TemplateCard extends Component {
         event.preventDefault()
 
         Backendless.Data.of("nfts").save({
-            product_isbn: this.state.prod_id,
+            product_isbn: this.state.isbn,
             product_title: this.props.name,
-            images: this.props.uri
+            product_description: this.props.description,
+            product_price: this.props.price,
+            images: this.props.json
         }).then((obj) => {
             this.setState({ message : obj.objectId })
             console.log(obj.objectId)
@@ -29,7 +31,7 @@ class TemplateCard extends Component {
         const { Field } = Form
         return (
             <Card>
-                <Image src={this.props.uri} size='medium' />
+                <Image src={this.props.image} size='medium' />
                 <Card.Content>
                     <Card.Header>{this.props.name}</Card.Header>
                     <Card.Meta>${this.props.price}</Card.Meta>
@@ -38,9 +40,9 @@ class TemplateCard extends Component {
                     </Card.Description>
                     <Card.Meta textAlign="center">
                         <Field>
-                            <label>Unique Product ID: </label>
+                            <label>Unique Product ID/ISBN: </label>
                             <input 
-                                onChange={event => {this.setState({ prod_id: event.target.value })}}
+                                onChange={event => {this.setState({ isbn: event.target.value })}}
                             />
                         </Field>
                         <Button onClick={this.onCreate}>Create New Instance</Button>

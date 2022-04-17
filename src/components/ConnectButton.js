@@ -8,7 +8,7 @@ import web3 from '../web3';
 function ConnectButton() {
     const [isActive, setIsActive] = useState(false); 
 
-    const { active, activate, deactivate } = useWeb3React(); 
+    const { active, activate } = useWeb3React(); 
 
     useEffect(() => { 
         let accounts = []

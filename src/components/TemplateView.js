@@ -27,9 +27,11 @@ class TemplateView extends Component {
                                 product_description: obj.product_description, 
                                 product_title: obj.product_title, 
                                 product_price: obj.product_price,
-                                image_uri: 'not valid'
+                                image_uri: 'not valid',
+                                json_uri: 'not valid'
                             })
-                            return
+
+                            return obj
                         }
 
                         var json = JSON.parse(file.toString())
@@ -38,11 +40,13 @@ class TemplateView extends Component {
                             product_description: obj.product_description, 
                             product_title: obj.product_title, 
                             product_price: obj.product_price,
-                            image_uri: json['image']
+                            image_uri: json['image'],
+                            json_uri: obj.product_image
                         })
 
                         this.setState({ infos })
 
+                        return obj
                     })
                 })
 
@@ -61,7 +65,8 @@ class TemplateView extends Component {
             return (
                 <TemplateCard
                     name={info['product_title']}
-                    uri={info['image_uri']}
+                    image={info['image_uri']}
+                    json={info['json_uri']}
                     description={info['product_description']}
                     price={info['product_price']}
                 />

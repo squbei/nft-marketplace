@@ -1,117 +1,55 @@
 import React, { Component } from 'react'; 
 import web3 from '../web3';
-import ipfs from '../ipfs';
 import collection from '../collection'; 
 
 import { Form, Button, Message } from 'semantic-ui-react'; 
 
+import Backendless from 'backendless';
+
 class MintNFT extends Component {
     state = {
-        name: '', 
-        description: '', 
-        price: '',
-        ipfsHash: '', 
-        buffer: null, 
+        object_id: '', 
         message: '', 
         loading: false
     }
 
-    onFileChange = (event) =>  {
-        event.preventDefault(); 
-
-        const file = event.target.files[0]; 
-
-        const reader = new FileReader(); 
-        reader.readAsArrayBuffer(file);
-        reader.onloadend = () => {
-            this.setState({ buffer: Buffer(reader.result) }); 
-        }
-        
-    }
-
     onMint = async (event) => {
         event.preventDefault();
-    
-        ipfs.files.add(this.state.buffer, async (err, image_result) => {
-            if (err) {
-                console.log(err);
-                return; 
-            }
-            this.setState({ ipfsHash: image_result[0].hash })
-            // console.log("ipfsHash", this.state.ipfsHash);
 
-            var metadata = {
-                "image": "https://ipfs.io/ipfs/" + this.state.ipfsHash
-            }
-            var json = JSON.stringify(metadata); 
-            ipfs.files.add(Buffer.from(json), async (err, json_result) => {
-                if (err) {
-                    console.log(err); 
-                    return; 
-                }
-    
-                this.setState({ loading: true });
-    
-                const accounts = await web3.eth.getAccounts();
-    
+        this.setState({ loading: true })
+
+        const accounts = await web3.eth.getAccounts()
+
+        Backendless.Data.of("nfts").findById(this.state.object_id)
+            .then( async (obj) => {
                 try {
-                    await collection.methods.mint(this.state.name, json_result[0].hash, this.state.description, web3.utils.toWei(this.state.price, 'ether')).send({
+                    await collection.methods.mint(obj.product_title, obj.images, obj.product_description, 0).send({
                         from: accounts[0]
                         }); 
                 } catch(err) {
-                    this.setState({ message: err.message }); 
+                    this.setState({ message: err.message })
                 }
-                
-                this.setState({ loading: false })
-    
-                return; 
-            })  
-            return;  
-        })
+            }).catch( (err) => {
+                console.log(err)
+            })
+        
+        this.setState({ loading: false })
     }
 
     render() {
         const { Field } = Form; 
         return (
             <Form onSubmit={this.onMint}>
-                <h2>Mint an NFT</h2>
+                <h2>Claim NFT</h2>
 
                 <Field>
-                <label>NFT Name: </label>
+                <label>NFT ID: </label>
                 <input 
                     value={this.state.name}
-                    onChange={event => this.setState({ name: event.target.value })} 
+                    onChange={event => this.setState({ object_id: event.target.value })} 
                     required
                 />
                 </Field>
-
-                <Field>
-                <label>NFT Description: </label>
-                <input 
-                    value={this.state.description}
-                    onChange={event => this.setState({ description: event.target.value })}
-                    required
-                />
-                </Field>
-
-                <Field>
-                <label>NFT Upload: </label>
-                <input
-                    type='file'
-                    onChange={this.onFileChange}
-                    required
-                />
-                </Field>
-
-                <Field>
-                <label>NFT Price (in ether): </label>
-                <input 
-                    value={this.state.price}
-                    onChange={event => this.setState({ price: event.target.value })}
-                    required
-                />
-                </Field>
-
                 <Button type='submit' loading={this.state.loading}>Mint</Button>
                 <Message 
                     error
