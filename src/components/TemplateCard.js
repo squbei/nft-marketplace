@@ -2,12 +2,11 @@ import React, { Component } from "react";
 
 import { Card, Image, Form, Button } from 'semantic-ui-react';
 import axios from "axios";
-
-import Backendless from "backendless";
+import ipfs from '../ipfs';
 
 class TemplateCard extends Component {
     state = {
-        isbn: '', 
+        product_id: '', 
         secret_code: '',
         message: ''
     }
@@ -15,22 +14,43 @@ class TemplateCard extends Component {
     onCreate = (event) => {
         event.preventDefault()
 
-        const nft = {
-            token_id: -1, 
-            template_id: this.props.template_id,
-            product_id: this.state.isbn, 
-            name: this.props.name, 
-            secret_code: this.state.secret_code,
-            description: this.props.description, 
+        var metadata = {
+            "image": this.props.image,
+            "product_id": this.state.product_id
         }
+        var json = JSON.stringify(metadata); 
+        ipfs.files.add(Buffer.from(json), async (err, json_result) => {
+            if (err) {
+                console.log(err); 
+                return; 
+            }
 
-        axios.post(`http://localhost:8000/api/nfts/`, nft)
-            .then((res) => {
-                this.setState({ message: 'Share this ID with the buyer: ' + res.data.id})
-            })
-            .catch((err) => {
-                console.log(err)
-            })
+            this.setState({ loading: true });
+
+            console.log(json_result[0].hash)
+
+            const nft = {
+                token_id: -1, 
+                template_id: this.props.template_id,
+                product_id: this.state.product_id, 
+                name: this.props.name, 
+                secret_code: this.state.secret_code,
+                description: this.props.description, 
+                ipfs_hash: json_result[0].hash
+            }
+    
+            axios.post(`http://localhost:8000/api/nfts/`, nft)
+                .then((res) => {
+                    this.setState({ message: 'Share this ID with the buyer: ' + res.data.id})
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+            
+            this.setState({ loading: false })
+
+            return; 
+        })  
     }
 
     render() {
@@ -48,7 +68,7 @@ class TemplateCard extends Component {
                         <Field>
                             <label>Unique Product ID/ISBN: </label>
                             <input 
-                                onChange={event => {this.setState({ isbn: event.target.value })}}
+                                onChange={event => {this.setState({ product_id: event.target.value })}}
                             />
                         </Field>
                         <Field>

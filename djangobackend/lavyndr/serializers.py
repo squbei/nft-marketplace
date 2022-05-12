@@ -9,7 +9,7 @@ class TemplateSerializer(serializers.ModelSerializer):
 class NFTSerializer(serializers.ModelSerializer):
     class Meta:
         model = NFT
-        fields = ('id', 'token_id', 'template_id', 'product_id', 'name', 'secret_code', 'description')
+        fields = ('id', 'token_id', 'template_id', 'product_id', 'name', 'secret_code', 'description', 'ipfs_hash')
 
 
 

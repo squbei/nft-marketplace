@@ -18,6 +18,7 @@ class NFT(models.Model):
     name = models.CharField(max_length=500)
     secret_code = models.CharField(max_length=16, default=None)
     description = models.TextField()
+    ipfs_hash = models.CharField(max_length=200, blank=True)
 
     def _str_(self):
         return self.name + self.id

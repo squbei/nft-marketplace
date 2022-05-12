@@ -23,23 +23,35 @@ class MintNFT extends Component {
         const res = await fetch(`http://localhost:8000/api/nfts/${id}`)
         const nft = await res.json()
 
-        const template_id = nft.template_id
-        const res2 = await fetch(`http://localhost:8000/api/templates/${template_id}`)
-        const template = await res2.json()
+        // const template_id = nft.template_id
+        // const res2 = await fetch(`http://localhost:8000/api/templates/${template_id}`)
+        // const template = await res2.json()
 
         console.log(nft)
-        console.log(template)
+        // console.log(template)
 
         this.setState({ loading: true })
 
         try {
-            const nft_id = await collection.methods.mint(nft.name, template.image_hash, nft.description, 0).send({
+            const nft_id = await collection.methods.mint(nft.name, nft.ipfs_hash, nft.description, 0).send({
                 from: accounts[0]
                 }); 
             
-            await axios.put(`http://localhost:8000/api/nfts/${id}/`, { token_id: nft_id })
+            console.log(nft_id)
+
+            const new_nft = {
+                token_id: nft_id, 
+                template_id: nft.template_id,
+                product_id: nft.product_id, 
+                name: nft.name, 
+                secret_code: nft.secret_code,
+                description: nft.description, 
+                ipfs_hash: nft.ipfs_hash
+            }
+            
+            const response = await axios.put(`http://localhost:8000/api/nfts/${id}/`, new_nft)
         } catch (err) {
-            console.log(err)
+            console.log(err.response.data)
         }
 
         this.setState({ loading: false })
