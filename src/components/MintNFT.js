@@ -5,6 +5,7 @@ import collection from '../collection';
 import { Form, Button, Message } from 'semantic-ui-react'; 
 
 import Backendless from 'backendless';
+import axios from 'axios';
 
 class MintNFT extends Component {
     state = {
@@ -16,27 +17,51 @@ class MintNFT extends Component {
     onMint = async (event) => {
         event.preventDefault();
 
-
         const accounts = await web3.eth.getAccounts()
 
-        Backendless.Data.of("nfts").findById(this.state.object_id)
-            .then( async (obj) => {
+        const id = this.state.object_id
+        const res = await fetch(`http://localhost:8000/api/nfts/${id}`)
+        const nft = await res.json()
 
-                this.setState({ loading: true })
+        const template_id = nft.template_id
+        const res2 = await fetch(`http://localhost:8000/api/templates/${template_id}`)
+        const template = await res2.json()
 
-                try {
-                    await collection.methods.mint(obj.product_title, obj.images, obj.product_description, 0).send({
-                        from: accounts[0]
-                        }); 
-                } catch(err) {
-                    this.setState({ message: err.message })
-                }
+        console.log(nft)
+        console.log(template)
 
-                this.setState({ loading: false })
+        this.setState({ loading: true })
 
-            }).catch( (err) => {
-                console.log(err)
-            })
+        try {
+            const nft_id = await collection.methods.mint(nft.name, template.image_hash, nft.description, 0).send({
+                from: accounts[0]
+                }); 
+            
+            await axios.put(`http://localhost:8000/api/nfts/${id}/`, { token_id: nft_id })
+        } catch (err) {
+            console.log(err)
+        }
+
+        this.setState({ loading: false })
+
+        // Backendless.Data.of("nfts").findById(this.state.object_id)
+        //     .then( async (obj) => {
+
+        //         this.setState({ loading: true })
+
+        //         try {
+        //             await collection.methods.mint(obj.product_title, obj.images, obj.product_description, 0).send({
+        //                 from: accounts[0]
+        //                 }); 
+        //         } catch(err) {
+        //             this.setState({ message: err.message })
+        //         }
+
+        //         this.setState({ loading: false })
+
+        //     }).catch( (err) => {
+        //         console.log(err)
+        //     })
         
     }
 

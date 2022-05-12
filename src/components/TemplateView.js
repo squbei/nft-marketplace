@@ -12,48 +12,32 @@ class TemplateView extends Component {
         image: ''
     }
 
-    componentDidMount() {   
+    async componentDidMount() {
 
-        Backendless.Data.of("products").find()
-            .then((obj_arr) => {
-                var infos = []
+        const res = await fetch("http://localhost:8000/api/templates/")
+        const templates = await res.json()
 
-                obj_arr.map((obj, ind) => {
-                    console.log(obj)
-                    ipfs.files.cat(obj.product_image, async (err, file) => {
-                        if (err) {
-                            console.log("error: " + err)
-                            infos.push({
-                                product_description: obj.product_description, 
-                                product_title: obj.product_title, 
-                                product_price: obj.product_price,
-                                image_uri: 'not valid',
-                                json_uri: 'not valid'
-                            })
+        var infos = []
 
-                            return obj
-                        }
+        templates.map((temp, ind) => {
+            ipfs.files.cat(temp.image_hash, async (err, file) => {
 
-                        var json = JSON.parse(file.toString())
+                var json = JSON.parse(file.toString())
 
-                        infos.push({
-                            product_description: obj.product_description, 
-                            product_title: obj.product_title, 
-                            product_price: obj.product_price,
-                            image_uri: json['image'],
-                            json_uri: obj.product_image
-                        })
-
-                        this.setState({ infos })
-
-                        return obj
-                    })
+                infos.push({
+                    id: temp.id,
+                    name: temp.name, 
+                    description: temp.description, 
+                    price: temp.price,
+                    image_uri: json['image'], 
+                    json_uri: temp.image_hash
                 })
 
+                this.setState({ infos })
 
-            }).catch(err => {
-                console.log(err)
+                return; 
             })
+        })
     }
 
     renderCards() {    
@@ -64,11 +48,12 @@ class TemplateView extends Component {
         return this.state.infos.map( (info, ind) => {
             return (
                 <TemplateCard
-                    name={info['product_title']}
+                    template_id={info['id']}
+                    name={info['name']}
                     image={info['image_uri']}
                     json={info['json_uri']}
-                    description={info['product_description']}
-                    price={info['product_price']}
+                    description={info['description']}
+                    price={info['price']}
                 />
             )
         })

@@ -3,7 +3,7 @@ const { ethers, upgrades } = require("hardhat")
 async function main() {
     const Collection = await ethers.getContractFactory("CollectionV0")
 
-    const collection = await upgrades.deployProxy(Collection, ['Tests', "TEST"], {
+    const collection = await upgrades.deployProxy(Collection, ['Lavyndr', "LAV"], {
         initializer: "initialize", 
     })
     await collection.deployed(); 

@@ -8,7 +8,7 @@ class BuyNFT extends Component {
     state = {
         message: '', 
         disable: false, 
-        loading:''
+        loading: false
     }
 
     async componentDidMount() {

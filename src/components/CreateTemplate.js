@@ -1,6 +1,6 @@
 import React, { Component } from "react"
 
-import Backendless from "backendless"
+import axios from 'axios'
 import ipfs from '../ipfs';
 
 import { Form, Button, Message } from 'semantic-ui-react'; 
@@ -30,7 +30,8 @@ class CreateTemplate extends Component {
             this.setState({ ipfsHash: image_result[0].hash })
 
             var metadata = {
-                "image": "https://ipfs.io/ipfs/" + this.state.ipfsHash
+                "image": "https://ipfs.io/ipfs/" + this.state.ipfsHash,
+                "product_id": -1
             }
             var json = JSON.stringify(metadata); 
             ipfs.files.add(Buffer.from(json), async (err, json_result) => {
@@ -41,17 +42,14 @@ class CreateTemplate extends Component {
     
                 this.setState({ loading: true });
 
-                Backendless.Data.of("products").save({
-                    product_title: name, 
-                    product_description: description, 
-                    product_price: price,
-                    product_image: json_result[0].hash
-                }).then( (obj) => {
-                    console.log("Successfully saved object " + obj.objectId)
-                    console.log(obj.product_image)
-                }).catch( (err) => {
-                    console.log("Error: " + err)
-                })
+                const template = {
+                    name: name, 
+                    description: description,
+                    image_hash: json_result[0].hash,
+                    price: price
+                }
+
+                axios.post(`http://localhost:8000/api/templates/`, template)
                 
                 this.setState({ loading: false })
     

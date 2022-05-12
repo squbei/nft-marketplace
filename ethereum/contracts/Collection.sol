@@ -55,12 +55,12 @@ contract CollectionV0 is ERC721EnumerableUpgradeable {
         string memory uri, 
         string memory desc, 
         uint256 price
-    ) external {
+    ) external returns (uint256) {
         // ensure that the uri is unique (NFT is unique)
         require(!uriExists[uri]);
 
         // increment counter 
-        counter ++; 
+        counter++; 
 
         // mint the token
         _safeMint(msg.sender, counter);
@@ -79,6 +79,8 @@ contract CollectionV0 is ERC721EnumerableUpgradeable {
         );
         
         uriExists[uri] = true; 
+
+        return counter;
     }
 
     function getNFTInfo(uint tokenId) external view returns(string memory, string memory, string memory, address, address, uint, bool) {
