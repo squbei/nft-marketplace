@@ -2,63 +2,93 @@ import "./App.css";
 import React, { Component } from "react";
 import 'semantic-ui-css/semantic.min.css'; 
 import { Button, Container } from 'semantic-ui-react';
+import web3 from "./web3";
+
 import ViewNFT from "./components/ViewNFT";
 import MintNFT from "./components/MintNFT";
 import AssetsView from "./components/AssetsView";
 import ConnectButton from './components/ConnectButton';
 import CreateTemplate from "./components/CreateTemplate";
-
-import Backendless from "backendless"
 import TemplateView from "./components/TemplateView";
-
-const APP_ID = '31E254A3-9D88-87DB-FF27-2DDF69445C00';
-const API_KEY = 'E6546B39-24B1-40F9-96B2-64E2A45B9669';
-Backendless.serverURL = 'https://api.backendless.com';
-Backendless.initApp(APP_ID, API_KEY);
+import CreateAccount from "./components/CreateAccount";
+import UnclaimedNFTs from "./components/UnclaimedNFTs";
 
 class App extends Component {
   state = {
-      view: ''
+      address: '',
+      view: '', 
+      account_type: ''
     }
+
+  async componentDidMount() {
+    const addresses = await web3.eth.getAccounts()
+    if (addresses.length === 0) {
+      return
+    }
+    const address = addresses[0]
+    this.setState({ address })
+
+    const res = await fetch("http://localhost:8000/api/accounts/")
+    const accounts = await res.json()
+
+    const account = accounts.find(a => a.wallet_address === address)
+    if (account === undefined) {
+      this.setState({ view: 'new_account' })
+    } else {
+      const type = account.type
+      this.setState({ account_type: type })
+    }
+  }
 
   renderView() {
     if (this.state.view === 'browse') {
+      return (<ViewNFT/>)
+    } else if (this.state.view === 'create') {
+      return (<CreateTemplate address={this.state.address}/>)
+    } else if (this.state.view === 'templates') {
+      return (<TemplateView address={this.state.address}/>)
+    } else if (this.state.view === 'assets') {
+      return (<AssetsView/>)
+    } else if (this.state.view === 'claim') {
+      return (<MintNFT/>)
+    } else if (this.state.view === 'new_account') {
+      return (<CreateAccount address={this.state.address}/>)
+    } else if (this.state.view === 'unclaimed') {
+      return (<UnclaimedNFTs address={this.state.address}/>)
+    }
+    return null; 
+  }
+
+  renderButtons() {
+    if (this.state.account_type === 'seller') {
       return (
-        <div>
-          <ViewNFT />
+        <div style={{ marginTop: '10px' }}>
+          <Button content="Explore all NFTs" onClick={(event) => this.setState({ view: 'browse' })} />
+          <Button content="Add a New Product" onClick={(event) => this.setState({ view: 'create' })}/>
+          <Button content="See all my templates" onClick={(event) => this.setState({ view: 'templates'})}/> 
+          <Button content="Unclaimed NFTs" onClick={(event => this.setState({ view: 'unclaimed' }))}/>
+          <Button content="My Profile" onClick={(event) => this.setState({ view: 'assets'})}/>
+
+        </div>
+      )
+    } 
+
+    if (this.state.account_type === 'buyer') {
+      return (
+        <div style={{ marginTop: '10px' }}>
+          <Button content="Explore all NFTs" onClick={(event) => this.setState({ view: 'browse' })} />
+          <Button content="Claim an NFT" onClick={(event) => this.setState({ view: 'claim' })}/>
+          <Button content="My Profile" onClick={(event) => this.setState({ view: 'assets'})}/>
+
         </div>
       )
     }
-    return null; 
-  }
 
-  renderCreate() {
-    if (this.state.view === 'create') {
-      return (<CreateTemplate/>)
-      // return (<MintNFT/>); 
-    }
-    return null; 
-  }
-
-  renderTemplates() {
-    if (this.state.view === 'templates') {
-      return (<TemplateView/>)
-    }
-    return null;
-  }
-
-  renderAssets() {
-    if (this.state.view === 'assets') {
-      return (<AssetsView/>)
-    }
-    return null; 
-  }
-
-  renderClaim() {
-    if (this.state.view === 'claim') {
-      return (<MintNFT/>)
-    }
-    return null;
+    return (
+      <div style={{ marginTop: '10px' }}>
+        <Button content="Explore all NFTs" onClick={(event) => this.setState({ view: 'browse' })} />
+      </div>
+    )
   }
 
   render() {
@@ -68,20 +98,9 @@ class App extends Component {
           <div style={{ marginBottom: '20px' }}>
             <h1>Welcome to Lavyndr!</h1> 
             <ConnectButton/>
-            <div style={{ marginTop: '10px' }}>
-              <Button content="Explore all NFTs" onClick={(event) => this.setState({ view: 'browse' })}/>
-              <Button content="Add a New Product" onClick={(event) => this.setState({ view: 'create' })}/>
-              <Button content="See all templates" onClick={(event) => this.setState({ view: 'templates'})}/> 
-              <Button content="Claim an NFT" onClick={(event) => this.setState({ view: 'claim' })}/>
-              {/* <Button content="Manage the NFTs you own" onClick={(event) => this.setState({ view: 'assets'})}/>  */}
-
-            </div>
+            {this.renderButtons()}
           </div>
           {this.renderView()}
-          {this.renderCreate()}
-          {this.renderAssets()}
-          {this.renderTemplates()}
-          {this.renderClaim()}
         </div>
       </Container>
     );

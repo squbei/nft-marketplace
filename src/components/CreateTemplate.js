@@ -46,7 +46,8 @@ class CreateTemplate extends Component {
                     name: name, 
                     description: description,
                     image_hash: json_result[0].hash,
-                    price: price
+                    price: price, 
+                    brand_address: this.props.address
                 }
 
                 axios.post(`http://localhost:8000/api/templates/`, template)

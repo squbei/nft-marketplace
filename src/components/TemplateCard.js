@@ -27,7 +27,7 @@ class TemplateCard extends Component {
 
             this.setState({ loading: true });
 
-            console.log(json_result[0].hash)
+            // console.log(json_result[0].hash)
 
             const nft = {
                 token_id: -1, 
@@ -36,7 +36,9 @@ class TemplateCard extends Component {
                 name: this.props.name, 
                 secret_code: this.state.secret_code,
                 description: this.props.description, 
-                ipfs_hash: json_result[0].hash
+                ipfs_hash: json_result[0].hash, 
+                brand_address: this.props.address,
+                minted: false
             }
     
             axios.post(`http://localhost:8000/api/nfts/`, nft)

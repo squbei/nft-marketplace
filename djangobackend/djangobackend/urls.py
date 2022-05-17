@@ -20,7 +20,8 @@ from lavyndr import views
 
 router = routers.DefaultRouter()
 router.register(r'templates', views.TemplateView, 'template')
-router.register(r'nfts', views.NFTView, 'views')
+router.register(r'nfts', views.NFTView, 'nft')
+router.register(r'accounts', views.AccountView, 'account')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

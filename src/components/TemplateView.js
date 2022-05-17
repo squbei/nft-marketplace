@@ -3,7 +3,6 @@ import { Card } from 'semantic-ui-react';
 
 import TemplateCard from './TemplateCard';
 
-import Backendless from 'backendless';
 import ipfs from '../ipfs'; 
 
 class TemplateView extends Component {
@@ -14,12 +13,17 @@ class TemplateView extends Component {
 
     async componentDidMount() {
 
-        const res = await fetch("http://localhost:8000/api/templates/")
+        const res = await fetch(`http://localhost:8000/api/templates/`)
         const templates = await res.json()
 
         var infos = []
 
         templates.map((temp, ind) => {
+
+            if (temp.brand_address !== this.props.address) {
+                return
+            }
+
             ipfs.files.cat(temp.image_hash, async (err, file) => {
 
                 var json = JSON.parse(file.toString())
@@ -54,6 +58,7 @@ class TemplateView extends Component {
                     json={info['json_uri']}
                     description={info['description']}
                     price={info['price']}
+                    address={this.props.address}
                 />
             )
         })

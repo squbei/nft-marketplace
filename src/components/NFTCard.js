@@ -13,6 +13,11 @@ class NFTCard extends Component {
         if (this.props.view === 'owned') {
             return <OwnerOptions id={this.props.id} disabled={this.props.view !== 'owned'} forSale={this.props.forSale}/>
         }
+        else {
+            return (
+                <h3>ID (to share with buyer): {this.props.id}</h3>
+            ); 
+        }
     }
 
     render() {

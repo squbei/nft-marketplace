@@ -1,7 +1,7 @@
 from django.shortcuts import render
-from .serializers import NFTSerializer, TemplateSerializer
+from .serializers import NFTSerializer, TemplateSerializer, AccountSerializer
 from rest_framework import viewsets
-from .models import Template, NFT
+from .models import Template, NFT, Account
 
 # Create your views here.
 class TemplateView(viewsets.ModelViewSet):
@@ -11,4 +11,8 @@ class TemplateView(viewsets.ModelViewSet):
 class NFTView(viewsets.ModelViewSet):
     serializer_class = NFTSerializer
     queryset = NFT.objects.all()
+
+class AccountView(viewsets.ModelViewSet):
+    serializer_class = AccountSerializer
+    queryset = Account.objects.all()
     
