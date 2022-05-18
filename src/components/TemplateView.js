@@ -21,7 +21,7 @@ class TemplateView extends Component {
         templates.map((temp, ind) => {
 
             if (temp.brand_address !== this.props.address) {
-                return
+                return temp
             }
 
             ipfs.files.cat(temp.image_hash, async (err, file) => {
@@ -39,8 +39,10 @@ class TemplateView extends Component {
 
                 this.setState({ infos })
 
-                return; 
+                return temp; 
             })
+
+            return temp
         })
     }
 

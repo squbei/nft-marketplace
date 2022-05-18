@@ -30,23 +30,19 @@ class ViewNFT extends Component {
                 }
                 var json = JSON.parse(file.toString()); 
                 this.setState({ image: json['image'] })
-
-                infos.push({
-                    id: id,
-                    name: info[0], 
-                    uri: this.state.image, 
-                    description: info[2],
-                    creator: info[3], 
-                    owner: info[4], 
-                    price: web3.utils.fromWei(info[5], 'ether'), 
-                    forSale: info[6].toString()
-                });
-
-
-                this.setState({ infos }); 
             })
-
-
+            infos.push({
+                id: id,
+                name: info[0], 
+                uri: this.state.image, 
+                description: info[2],
+                creator: info[3], 
+                owner: info[4], 
+                price: web3.utils.fromWei(info[5], 'ether'), 
+                forSale: info[6].toString()
+            });
+            
+            this.setState({ infos }); 
         }
 
     }

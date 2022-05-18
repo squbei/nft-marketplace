@@ -63,8 +63,8 @@ class MintNFT extends Component {
                 brand_address: nft.brand_address,
                 minted: true
             }
+            await axios.put(`http://localhost:8000/api/nfts/${id}/`, new_nft)
             
-            const response = await axios.put(`http://localhost:8000/api/nfts/${id}/`, new_nft)
         } catch (err) {
             console.log(err)
         }

@@ -8,8 +8,8 @@ class OwnerOptions extends Component {
     state = {
         newPrice: '', 
         message: '', 
-        loadingToggle: '', 
-        loadingPrice: ''
+        loadingToggle: false, 
+        loadingPrice: false
     }
 
     onToggle = async (event) => {

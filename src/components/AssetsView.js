@@ -33,7 +33,6 @@ class AssetsView extends Component {
 
         for (var id = ownedNFTs.length; id > 0; id--) {
             const info = await collection.methods.getNFTInfo(id).call(); 
-            // console.log(info)
             ipfs.files.cat(info[1], async (err, file) => {
                 if (err) {
                     console.log(err); 
@@ -41,19 +40,19 @@ class AssetsView extends Component {
                 }
                 var json = JSON.parse(file.toString()); 
                 this.setState({ image: json['image'] })
-
-                infos.push({
-                    id: id,
-                    name: info[0], 
-                    uri: this.state.image, 
-                    description: info[2],
-                    creator: info[3], 
-                    owner: info[4], 
-                    price: web3.utils.fromWei(info[5], 'ether'), 
-                    forSale: info[6].toString()
-                });
-                this.setState({ infos }); 
             })
+
+            infos.push({
+                id: id,
+                name: info[0], 
+                uri: this.state.image, 
+                description: info[2],
+                creator: info[3], 
+                owner: info[4], 
+                price: web3.utils.fromWei(info[5], 'ether'), 
+                forSale: info[6].toString()
+            });
+            this.setState({ infos }); 
         }
         }
 
@@ -85,7 +84,7 @@ class AssetsView extends Component {
             <h3>Name: {this.state.user.name}</h3>
             <h3>Username: {this.state.user.username}</h3>
             <h3>Description: {this.state.user.description}</h3>
-            <h3>NFTs: </h3>
+            <h3>NFTs</h3>
 
             <Card.Group>
                 {this.renderCards()}

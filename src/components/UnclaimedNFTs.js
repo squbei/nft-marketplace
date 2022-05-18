@@ -23,11 +23,11 @@ class UnclaimedNFTs extends Component {
             console.log(nft)
 
             if (nft.brand_address !== this.props.address) {
-                return
+                return nft
             }
 
             if (nft.minted) {
-                return
+                return nft
             }
 
             ipfs.files.cat(nft.ipfs_hash, async (err, file) => {
@@ -45,8 +45,10 @@ class UnclaimedNFTs extends Component {
 
                 this.setState({ infos })
 
-                return; 
+                return nft; 
             })
+
+            return nft; 
         })
     }
 
